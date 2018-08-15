@@ -27,8 +27,8 @@ export default class AssetLoader extends Phaser.Plugin {
       Object.keys(this.loaders).forEach((assetType) => {
         const assets = manifest[assetType]
         if (!assets) return
-        assets.forEach((assetKey) => {
-          this.loaders[assetType].call(this, assetKey, assetPostfix)
+        assets.forEach((assetOpt) => {
+          this.loaders[assetType].call(this, assetOpt, assetPostfix)
         })
       })
       this.game.load.onLoadComplete.addOnce(() => {
@@ -79,8 +79,18 @@ export default class AssetLoader extends Phaser.Plugin {
     this.game.load.atlasJSONArray(key, imageUrl, isString(json) && json, isObject(json) && json)
   }
 
-  loadImage (key, assetPostfix) {
+  loadImage (opt, assetPostfix) {
     const urls = []
+
+    let key, alias;
+    if (typeof opt === 'string') {
+      key = opt;
+      alias = opt;
+    } else if(typeof opt === 'object') {
+      key = opt.key;
+      alias = opt.alias || opt.key;
+    }
+
     try {
       urls.push(this.req(`./images/${key}${assetPostfix}.jpg`))
     } catch (e) {}
@@ -92,7 +102,7 @@ export default class AssetLoader extends Phaser.Plugin {
     if (urls.length === 0) {
       warn('image', key)
     } else {
-      this.game.load.image(key, urls[0])
+      this.game.load.image(alias, urls[0])
     }
   }
 
