@@ -65,7 +65,33 @@ export default class AssetLoader extends Phaser.Plugin {
   }
 
   loadSpriteSheet (opt, assetPostfix) {
-    let imageUrl, json
+    let imageUrl, json;
+    let frameWidth, frameHeight, frameMax, margin, spacing;
+
+    let key, alias;
+    if (typeof opt === 'string') {
+      key = opt;
+      alias = opt;
+    } else if(typeof opt === 'object') {
+      key = opt.key;
+      alias = opt.alias || opt.key;
+      frameWidth = opt.frameWidth;
+      frameHeight = opt.frameHeight;
+      frameMax = opt.frameMax;
+      margin = opt.margin;
+      spacing = opt.spacing;
+    }
+
+    try {
+      imageUrl = this.req(`./spritesheets/${key}${assetPostfix}.png`);
+    } catch (e) {}
+
+    if (!imageUrl) warn('spriteSheet image', key);
+    this.game.load.spritesheet(alias, imageUrl, frameWidth, frameHeight, frameMax, margin, spacing);
+  }
+
+  loadAtlasJSONArray (opt, assetPostfix) {
+    let imageUrl, json;
 
     let key, alias;
     if (typeof opt === 'string') {
