@@ -11,6 +11,7 @@ export default class AssetLoader extends Phaser.Plugin {
     this.req = req
     this.loaders = {
       'audio': this.loadAudio,
+      'video': this.loadVideo,
       'spritesheets': this.loadSpriteSheet,
       'images': this.loadImage,
       'bitmap_fonts': this.loadBitmapFont
@@ -141,6 +142,30 @@ export default class AssetLoader extends Phaser.Plugin {
       this.game.load.image(alias, urls[0])
     }
   }
+
+  loadVideo (opt, assetPostfix) {
+    const urls = []
+
+    let key, alias;
+    if (typeof opt === 'string') {
+      key = opt;
+      alias = opt;
+    } else if(typeof opt === 'object') {
+      key = opt.key;
+      alias = opt.alias || opt.key;
+    }
+
+    try {
+      urls.push(this.req(`./images/${key}${assetPostfix}.mp4`))
+    } catch (e) {}
+
+    if (urls.length === 0) {
+      warn('video', key)
+    } else {
+      this.game.load.video(alias, urls[0]);
+    }
+  }
+
 
   loadBitmapFont (key, assetPostfix) {
     let imageUrl, xmlUrl
