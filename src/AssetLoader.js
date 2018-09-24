@@ -156,7 +156,7 @@ export default class AssetLoader extends Phaser.Plugin {
     }
 
     try {
-      urls.push(this.req(`./images/${key}${assetPostfix}.mp4`))
+      urls.push(this.req(`./video/${key}.mp4`))
     } catch (e) {}
 
     if (urls.length === 0) {
