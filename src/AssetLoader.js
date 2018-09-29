@@ -167,7 +167,16 @@ export default class AssetLoader extends Phaser.Plugin {
   }
 
 
-  loadBitmapFont (key, assetPostfix) {
+  loadBitmapFont (opt, assetPostfix) {
+    let key, alias;
+    if (typeof opt === 'string') {
+      key = opt;
+      alias = opt;
+    } else if(typeof opt === 'object') {
+      key = opt.key;
+      alias = opt.alias || opt.key;
+    }
+
     let imageUrl, xmlUrl
     try {
       imageUrl = this.req(`./bitmap_fonts/${key}${assetPostfix}.png`)
@@ -179,7 +188,7 @@ export default class AssetLoader extends Phaser.Plugin {
 
     if (!imageUrl) warn('bitmapFont image', key)
     if (!xmlUrl) warn('bitmapFont xml', key)
-    this.game.load.bitmapFont(key, imageUrl, xmlUrl)
+    this.game.load.bitmapFont(alias, imageUrl, xmlUrl)
   }
 
 }
